@@ -1,3 +1,10 @@
 p {
     display: inline-block;
 }
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
