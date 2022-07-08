@@ -16,7 +16,7 @@ const gameBoard = (() => {
         ["-", "-", "-"],
         ["-", "-", "-"] 
         // ["X", "X", "O"],
-        // ["X", "O", "X"],
+        // ["X", "X", "O"],
         // ["O", "O", "X"] 
     ];
 
@@ -31,52 +31,71 @@ const gameBoard = (() => {
         }        
     }
 
-    return { markBox, displayOnScreen };
+    return { markBox, displayOnScreen, boardArray };
 
 })();
 
 //display controller to handle flow of game using module pattern
 const displayController = (() => {
-    gameBoard.displayOnScreen();
+    gameBoard.displayOnScreen(); //display starting board
     const dee = player ("d", "X");
+    const opponent = player ("opp", "O");
+    let playerTurn = 1;
 
     const displayBlocks = document.querySelectorAll(".board-row .board-box");
     displayBlocks.forEach(block => {
         block.addEventListener('click', () => {
-            //do logic here;
-            let rowClass = block.parentElement.classList[1];
-            let colClass = block.classList[1];
-            let row, col;
+            //cannot select a spot on the board that has already been marked
+            if (block.textContent !== "X" && block.textContent !== "O"){
+                //do logic here;
+                let rowClass = block.parentElement.classList[1];
+                let colClass = block.classList[1];
+                let row, col;
 
-            
-            //transform className to true array row pos value
-            switch(rowClass) {
-                case "row-1":
-                    row = 0;
-                    break;
-                case "row-2":
-                    row = 1;
-                    break;
-                case "row-3":
-                    row = 2;
-                    break;
+                
+                //transform className to true array row pos value
+                switch(rowClass) {
+                    case "row-1":
+                        row = 0;
+                        break;
+                    case "row-2":
+                        row = 1;
+                        break;
+                    case "row-3":
+                        row = 2;
+                        break;
+                }
+                //transform className to true array col pos value
+                switch(colClass) {
+                    case "col-1":
+                        col = 0;
+                        break;
+                    case "col-2":
+                        col = 1;
+                        break;
+                    case "col-3":
+                        col = 2;
+                        break;
+                }
+
+                if (playerTurn === 1){
+                    dee.placeMarker(row, col);
+                    gameBoard.displayOnScreen();
+                    playerTurn = 2;
+                }
+                else {
+                    opponent.placeMarker(row, col);
+                    gameBoard.displayOnScreen();
+                    playerTurn = 1;
+                }
+                
             }
-            //transform className to true array col pos value
-            switch(colClass) {
-                case "col-1":
-                    col = 0;
-                    break;
-                case "col-2":
-                    col = 1;
-                    break;
-                case "col-3":
-                    col = 2;
-                    break;
+            else{
+                // alert("Spot is already selected. Please choose a different spot");
             }
 
-            console.log(`row: ${row} col: ${col}`)
-            dee.placeMarker(row, col);
-            gameBoard.displayOnScreen();
+
+
         });
     });
 
