@@ -20,6 +20,7 @@ const gameBoard = (() => {
         // ["O", "O", "X"] 
     ];
 
+    const getBoardArray = () => boardArray;
     const markBox = (row, col, marker) => boardArray[row][col] = marker;
     const displayOnScreen = () => {
         for (let i = 0; i < boardArray.length; i++){
@@ -31,7 +32,7 @@ const gameBoard = (() => {
         }        
     }
 
-    return { markBox, displayOnScreen, boardArray };
+    return { markBox, displayOnScreen, getBoardArray };
 
 })();
 
@@ -41,6 +42,58 @@ const displayController = (() => {
     const dee = player ("d", "X");
     const opponent = player ("opp", "O");
     let playerTurn = 1;
+
+
+    const checkForWinner = (block, row, col) => {
+        const blockVal = block.textContent;
+        const boardArrayCopy = gameBoard.getBoardArray();
+
+        let rowsMatch = true;
+        
+        //check for 3 in a row
+        for (let i = 0; i < 3; i++){
+            if (boardArrayCopy[row][i] !== blockVal){
+                rowsMatch = false;
+                break; 
+            }
+        }
+        if (rowsMatch){
+            console.log("victory by rows");
+            return true;
+        }
+
+        let colsMatch = true;
+
+        //check for 3 in a column
+        for (let i = 0; i < 3; i++){
+            if (boardArrayCopy[i][col] !== blockVal){
+                colsMatch = false;
+                break;
+            }
+        }
+        if (colsMatch){
+            console.log("victory by cols");
+            return true;
+        }
+
+        
+        //check for 3 in the diagnols
+        if (boardArrayCopy[0][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[2][2]  !== "-"){
+            if (boardArrayCopy[0][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[2][2]){
+                console.log("victory by top left diag");
+                return true;
+            }
+        }
+        else if (boardArrayCopy[2][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[0][2]  !== "-"){
+            if (boardArrayCopy[2][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[0][2]){
+                console.log("victory by top right diag");
+                return true;
+            }
+        } 
+        
+
+            
+    };
 
     const displayBlocks = document.querySelectorAll(".board-row .board-box");
     displayBlocks.forEach(block => {
@@ -81,21 +134,20 @@ const displayController = (() => {
                 if (playerTurn === 1){
                     dee.placeMarker(row, col);
                     gameBoard.displayOnScreen();
+                    checkForWinner(block, row, col);
                     playerTurn = 2;
+                    
                 }
                 else {
                     opponent.placeMarker(row, col);
                     gameBoard.displayOnScreen();
+                    checkForWinner(block, row, col);
                     playerTurn = 1;
-                }
-                
+                }  
             }
             else{
                 // alert("Spot is already selected. Please choose a different spot");
             }
-
-
-
         });
     });
 
