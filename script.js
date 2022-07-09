@@ -23,17 +23,18 @@ const gameBoard = (() => {
     const getBoardArray = () => boardArray;
     const markBox = (row, col, marker) => boardArray[row][col] = marker;
     const displayOnScreen = () => {
-        for (let i = 0; i < boardArray.length; i++){
-            for (let j = 0; j < boardArray.length; j++){
-                let row = document.querySelectorAll('.board-row')[i];
-                //set each p element in row div to corresponding value found in the gameboard array
-                row.children[j].textContent = boardArray[i][j];
-            }
-        }        
+        //convert our 2d game board into a string seperated by commas
+        const boardArrayString = boardArray.toString();
+        //convert the string seperated by commas into a 1d array for looping  
+        //and assigning to value to box position on the display
+        const stringArray = boardArrayString.split(',');
+        let boxList = document.querySelectorAll('.board-box');
+        for (let i = 0; i < stringArray.length; i++){
+            boxList[i].textContent = stringArray[i];
+        }      
     }
 
     return { markBox, displayOnScreen, getBoardArray };
-
 })();
 
 //display controller to handle flow of game using module pattern
@@ -42,7 +43,6 @@ const displayController = (() => {
     const dee = player ("d", "X");
     const opponent = player ("opp", "O");
     let playerTurn = 1;
-
 
     const checkForWinner = (block, row, col) => {
         const blockVal = block.textContent;
@@ -76,7 +76,6 @@ const displayController = (() => {
             return true;
         }
 
-        
         //check for 3 in the diagnols
         if (boardArrayCopy[0][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[2][2]  !== "-"){
             if (boardArrayCopy[0][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[2][2]){
@@ -89,23 +88,19 @@ const displayController = (() => {
                 console.log("victory by top right diag");
                 return true;
             }
-        } 
-        
-
-            
+        }   
     };
 
-    const displayBlocks = document.querySelectorAll(".board-row .board-box");
+    const displayBlocks = document.querySelectorAll(".board-box");
     displayBlocks.forEach(block => {
         block.addEventListener('click', () => {
             //cannot select a spot on the board that has already been marked
             if (block.textContent !== "X" && block.textContent !== "O"){
                 //do logic here;
-                let rowClass = block.parentElement.classList[1];
-                let colClass = block.classList[1];
+                let rowClass = block.classList[1];
+                let colClass = block.classList[2];
                 let row, col;
 
-                
                 //transform className to true array row pos value
                 switch(rowClass) {
                     case "row-1":
@@ -150,5 +145,4 @@ const displayController = (() => {
             }
         });
     });
-
 })();

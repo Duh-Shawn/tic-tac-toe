@@ -1,10 +1,28 @@
-p {
-    display: inline-block;
-}
-
 body {
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+p {
+}
+
+.board-container{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* grid-template-rows: repeat(3, 1fr); */
+}
+
+
+.board-row-line{
+    grid-column: 1 / -1;
+    height: 1px;
+    background: black;
+}
+
+.board-col-line{
+    grid-column: 1 / -1;
+    height: 1px;
+    background: black;
 }
