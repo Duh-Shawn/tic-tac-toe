@@ -5,15 +5,11 @@ body {
     align-items: center;
 }
 
-p {
-}
-
 .board-container{
-    display: grid;
+    display: none;
     grid-template-columns: repeat(3, 1fr);
     /* grid-template-rows: repeat(3, 1fr); */
 }
-
 
 .board-row-line{
     grid-column: 1 / -1;
@@ -25,4 +21,8 @@ p {
     grid-column: 1 / -1;
     height: 1px;
     background: black;
+}
+
+.victory-pop-up{
+    display: none;
 }

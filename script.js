@@ -1,3 +1,10 @@
+/*
+* De'Shawn Maynard
+* Tic Tac Toe JS project for practicing OOP using factory functions and the module pattern
+* June / July 2022
+*/
+
+
 //factory function to create player objects
 const player = (name, marker) => {
     const assignedMarker = marker;
@@ -5,7 +12,10 @@ const player = (name, marker) => {
         gameBoard.markBox(row, col, assignedMarker);
     };
 
-    return { placeMarker };
+    const getName = () => name;
+    const getMarker = () => assignedMarker;
+
+    return { placeMarker, getName, getMarker };
 };
 
 //game board object using module pattern
@@ -39,57 +49,26 @@ const gameBoard = (() => {
 
 //display controller to handle flow of game using module pattern
 const displayController = (() => {
-    gameBoard.displayOnScreen(); //display starting board
-    const dee = player ("d", "X");
-    const opponent = player ("opp", "O");
+
+    let playerOne;
+    const opponent = player ("Opponent", "O");
     let playerTurn = 1;
 
-    const checkForWinner = (block, row, col) => {
-        const blockVal = block.textContent;
-        const boardArrayCopy = gameBoard.getBoardArray();
-
-        let rowsMatch = true;
-        
-        //check for 3 in a row
-        for (let i = 0; i < 3; i++){
-            if (boardArrayCopy[row][i] !== blockVal){
-                rowsMatch = false;
-                break; 
-            }
-        }
-        if (rowsMatch){
-            console.log("victory by rows");
-            return true;
-        }
-
-        let colsMatch = true;
-
-        //check for 3 in a column
-        for (let i = 0; i < 3; i++){
-            if (boardArrayCopy[i][col] !== blockVal){
-                colsMatch = false;
-                break;
-            }
-        }
-        if (colsMatch){
-            console.log("victory by cols");
-            return true;
-        }
-
-        //check for 3 in the diagnols
-        if (boardArrayCopy[0][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[2][2]  !== "-"){
-            if (boardArrayCopy[0][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[2][2]){
-                console.log("victory by top left diag");
-                return true;
-            }
-        }
-        else if (boardArrayCopy[2][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[0][2]  !== "-"){
-            if (boardArrayCopy[2][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[0][2]){
-                console.log("victory by top right diag");
-                return true;
-            }
-        }   
-    };
+    
+    //
+    //
+    //event listeners
+    //
+    //
+    const startButton = document.querySelector(".welcome-pop-up button");
+    startButton.addEventListener('click', () => {
+        let playerName = document.querySelector(".welcome-pop-up input").value;
+        if (playerName === "") playerName = "Guest";
+        playerOne = player (playerName, "X");
+        showBoard();
+        gameBoard.displayOnScreen(); //display starting board
+        hideWelcomePopUp();
+    });
 
     const displayBlocks = document.querySelectorAll(".board-box");
     displayBlocks.forEach(block => {
@@ -127,22 +106,123 @@ const displayController = (() => {
                 }
 
                 if (playerTurn === 1){
-                    dee.placeMarker(row, col);
-                    gameBoard.displayOnScreen();
-                    checkForWinner(block, row, col);
+                    playerOne.placeMarker(row, col);
                     playerTurn = 2;
-                    
                 }
                 else {
                     opponent.placeMarker(row, col);
-                    gameBoard.displayOnScreen();
-                    checkForWinner(block, row, col);
                     playerTurn = 1;
-                }  
+                } 
+                gameBoard.displayOnScreen();
+                
+                let winningPlayer = checkForWinner(block, row, col)
+                //winner found
+                if (winningPlayer !== undefined){
+                    console.log(winningPlayer.getName());
+                    document.querySelector(".victory-pop-up h1").textContent = `${winningPlayer.getName()} wins!!!!`;
+                    showVictoryPopUp();
+                }
             }
             else{
                 // alert("Spot is already selected. Please choose a different spot");
             }
         });
     });
+
+    //
+    //
+    // helper functions
+    //
+    //
+    const showBoard = () => {
+        document.querySelector(".board-container").style.display = "grid";
+    };
+
+    const hideBoard = () => {
+        document.querySelector(".board-container").style.display = "none";
+    };
+
+    const showWelcomePopUp = () => {
+        document.querySelector(".welcome-pop-up").style.display = "block";
+    };
+
+    const hideWelcomePopUp = () => {
+        document.querySelector(".welcome-pop-up").style.display = "none";
+    };
+
+    const showVictoryPopUp = () => {
+        document.querySelector(".victory-pop-up").style.display = "block";
+    };
+
+    const hideVictoryPopUp = () => {
+        document.querySelector(".victory-pop-up").style.display = "none";
+    };
+
+    const checkForWinner = (block, row, col) => {
+        const blockVal = block.textContent;
+        const boardArrayCopy = gameBoard.getBoardArray();
+
+        let rowsMatch = true;
+        
+        //check for 3 in a row
+        for (let i = 0; i < 3; i++){
+            if (boardArrayCopy[row][i] !== blockVal){
+                rowsMatch = false;
+                break; 
+            }
+        }
+        if (rowsMatch){
+            console.log("victory by rows");
+            if (blockVal === playerOne.getMarker()){
+                return playerOne;
+            }
+            else{
+                return opponent;
+            }
+        }
+
+        let colsMatch = true;
+
+        //check for 3 in a column
+        for (let i = 0; i < 3; i++){
+            if (boardArrayCopy[i][col] !== blockVal){
+                colsMatch = false;
+                break;
+            }
+        }
+        if (colsMatch){
+            console.log("victory by cols");
+            if (blockVal === playerOne.getMarker()){
+                return playerOne;
+            }
+            else{
+                return opponent;
+            }
+        }
+
+        //check for 3 in a diagnol
+        if (boardArrayCopy[0][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[2][2]  !== "-"){
+            if (boardArrayCopy[0][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[2][2]){
+                console.log("victory by top left diag");
+                if (blockVal === playerOne.getMarker()){
+                    return playerOne;
+                }
+                else{
+                    return opponent;
+                }
+            }
+        }
+        else if (boardArrayCopy[2][0] !== "-" && boardArrayCopy[1][1] !== "-" && boardArrayCopy[0][2]  !== "-"){
+            if (boardArrayCopy[2][0] === boardArrayCopy[1][1] && boardArrayCopy[1][1]  === boardArrayCopy[0][2]){
+                console.log("victory by top right diag");
+                if (blockVal === playerOne.getMarker()){
+                    return playerOne;
+                }
+                else{
+                    return opponent;
+                }
+            }
+        }   
+    };
+
 })();
