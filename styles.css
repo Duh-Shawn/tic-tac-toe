@@ -60,8 +60,24 @@ h1 {
 }
 
 .victory-pop-up{
+    text-align: center;
     display: none;
     flex-direction: column;
     gap: 10px;
     justify-content: center;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    width: 400px;
+    height: 600px;
+    transform: translateX(-50%);
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    outline-style: solid;
+    backdrop-filter: blur(10px);
+}
+
+.victory-pop-up button{
+    flex: 0;
+    align-self: center;
 }

@@ -21,13 +21,10 @@ const player = (name, marker) => {
 //game board object using module pattern
 const gameBoard = (() => {
     
-    const boardArray = [
+    let boardArray = [
         ["-", "-", "-"],
         ["-", "-", "-"],
         ["-", "-", "-"] 
-        // ["X", "X", "O"],
-        // ["X", "X", "O"],
-        // ["O", "O", "X"] 
     ];
 
     const getBoardArray = () => boardArray;
@@ -43,8 +40,15 @@ const gameBoard = (() => {
             boxList[i].textContent = stringArray[i];
         }      
     }
+    const resetArray = () => {
+        boardArray = [
+            ["-", "-", "-"],
+            ["-", "-", "-"],
+            ["-", "-", "-"]
+        ];
+    }
 
-    return { markBox, displayOnScreen, getBoardArray };
+    return { markBox, displayOnScreen, getBoardArray, resetArray };
 })();
 
 //game controller to handle flow of game using module pattern
@@ -70,6 +74,13 @@ const gameController = (() => {
         showGame();
         gameBoard.displayOnScreen(); //display starting board
         hideWelcomePopUp();
+    });
+
+    const playAgainButton = document.querySelector(".victory-pop-up button");
+    playAgainButton.addEventListener('click', () => {
+        gameBoard.resetArray();
+        hideVictoryPopUp();
+        gameBoard.displayOnScreen();
     });
 
     const displayBlocks = document.querySelectorAll(".board-box");
@@ -113,7 +124,7 @@ const gameController = (() => {
                 //winner found
                 if (winningPlayer !== undefined){
                     console.log(winningPlayer.getName());
-                    document.querySelector(".victory-pop-up h1").textContent = `${winningPlayer.getName()} wins!!!!`;
+                    document.querySelector(".victory-pop-up h1").textContent = `${winningPlayer.getName()} WINS!!!!`;
                     showVictoryPopUp();
                 }
             }
@@ -168,6 +179,7 @@ const gameController = (() => {
     };
 
     const checkForWinner = (block, row, col) => {
+        
         const blockVal = block.textContent;
         const boardArrayCopy = gameBoard.getBoardArray();
 
