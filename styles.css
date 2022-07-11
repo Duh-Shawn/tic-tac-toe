@@ -3,26 +3,65 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+.wrapper{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+     
 }
 
 .board-container{
-    display: none;
+    display: grid;
+    margin-top: 25px;
     grid-template-columns: repeat(3, 1fr);
-    /* grid-template-rows: repeat(3, 1fr); */
+    text-align: center;
 }
 
-.board-row-line{
-    grid-column: 1 / -1;
-    height: 1px;
-    background: black;
+.board-box{
+    width: 150px;
+    height: 150px;
+    border: 2px solid black;
+    line-height: 150px;
+    margin: 0;
+    font-size: 50px;
+    font-style:
 }
 
-.board-col-line{
-    grid-column: 1 / -1;
-    height: 1px;
-    background: black;
+.col-1{
+    border-left: 0;
+}
+
+.col-3{
+    border-right: 0;
+}
+
+.row-1{
+    border-top: 0;
+}
+
+.row-3{
+    border-bottom: 0;
+}
+
+.welcome-pop-up{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .victory-pop-up{
     display: none;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
 }

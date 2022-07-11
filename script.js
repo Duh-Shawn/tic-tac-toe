@@ -47,8 +47,8 @@ const gameBoard = (() => {
     return { markBox, displayOnScreen, getBoardArray };
 })();
 
-//display controller to handle flow of game using module pattern
-const displayController = (() => {
+//game controller to handle flow of game using module pattern
+const gameController = (() => {
 
     let playerOne;
     const opponent = player ("Opponent", "O");
@@ -63,9 +63,11 @@ const displayController = (() => {
     const startButton = document.querySelector(".welcome-pop-up button");
     startButton.addEventListener('click', () => {
         let playerName = document.querySelector(".welcome-pop-up input").value;
-        if (playerName === "") playerName = "Guest";
+        if (playerName === ""){
+            playerName = "Guest";
+        }
         playerOne = player (playerName, "X");
-        showBoard();
+        showGame();
         gameBoard.displayOnScreen(); //display starting board
         hideWelcomePopUp();
     });
@@ -104,18 +106,10 @@ const displayController = (() => {
                         col = 2;
                         break;
                 }
-
-                if (playerTurn === 1){
-                    playerOne.placeMarker(row, col);
-                    playerTurn = 2;
-                }
-                else {
-                    opponent.placeMarker(row, col);
-                    playerTurn = 1;
-                } 
-                gameBoard.displayOnScreen();
                 
-                let winningPlayer = checkForWinner(block, row, col)
+                playTurn(row, col, block);
+                gameBoard.displayOnScreen();
+                let winningPlayer = checkForWinner(block, row, col);
                 //winner found
                 if (winningPlayer !== undefined){
                     console.log(winningPlayer.getName());
@@ -124,7 +118,7 @@ const displayController = (() => {
                 }
             }
             else{
-                // alert("Spot is already selected. Please choose a different spot");
+                alert("Spot is already selected. Please choose a different spot");
             }
         });
     });
@@ -134,12 +128,16 @@ const displayController = (() => {
     // helper functions
     //
     //
-    const showBoard = () => {
-        document.querySelector(".board-container").style.display = "grid";
+
+    const showGame = () => {
+        document.querySelector(".wrapper").style.display = "flex";
+        document.getElementById("player-one-marker").textContent = playerOne.getMarker();
+        document.getElementById("player-name").textContent = playerOne.getName().toUpperCase();
+
     };
 
-    const hideBoard = () => {
-        document.querySelector(".board-container").style.display = "none";
+    const hideGame = () => {
+        document.querySelector(".wrapper").style.display = "none";
     };
 
     const showWelcomePopUp = () => {
@@ -151,11 +149,22 @@ const displayController = (() => {
     };
 
     const showVictoryPopUp = () => {
-        document.querySelector(".victory-pop-up").style.display = "block";
+        document.querySelector(".victory-pop-up").style.display = "flex";
     };
 
     const hideVictoryPopUp = () => {
         document.querySelector(".victory-pop-up").style.display = "none";
+    };
+
+    const playTurn = (row, col) => {
+        if (playerTurn === 1){
+            playerOne.placeMarker(row, col);
+            playerTurn = 2;
+        }
+        else {
+            opponent.placeMarker(row, col);
+            playerTurn = 1;
+        } 
     };
 
     const checkForWinner = (block, row, col) => {
