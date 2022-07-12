@@ -66,17 +66,25 @@ const gameBoard = (() => {
 const gameController = (() => {
     let gameOver;
     let playerOne;
-    const opponent = player ("Opponent", "O");
+    let playerTwo;
     let playerTurn = 1;
 
     const startGame = () => {
-        let playerName = document.querySelectorAll(".welcome-pop-up input");
-        if (playerName === ""){
-            playerName = "Guest";
+        let playerNameList = document.querySelectorAll(".welcome-pop-up input");
+        let playerOneName = playerNameList[0].value;
+        let playerTwoName = playerNameList[1].value;
+        if (playerOneName === ""){
+            playerOneName = "Guest1";
         }
-        playerOne = player (playerName, "X");
+        if (playerTwoName === ""){
+            playerTwoName = "Guest2";
+        }
+        playerOne = player (playerOneName, "X");
+        playerTwo = player (playerTwoName, "O");
         document.getElementById("player-one-marker").textContent = playerOne.getMarker();
-        document.getElementById("player-name").textContent = playerOne.getName().toUpperCase();
+        document.getElementById("player-one-name").textContent = playerOne.getName().toUpperCase();
+        document.getElementById("player-two-marker").textContent = playerTwo.getMarker();
+        document.getElementById("player-two-name").textContent = playerTwo.getName().toUpperCase();
         displayController.showGame();
         displayController.displayBoardOnScreen();
         displayController.hideWelcomePopUp();
@@ -132,8 +140,8 @@ const gameController = (() => {
             }  
         }
         else {
-            opponent.placeMarker(row, col);
-            if (checkForWinner(opponent, row, col)){
+            playerTwo.placeMarker(row, col);
+            if (checkForWinner(playerTwo, row, col)){
                 playerTurn = 2;
             }
             else{
