@@ -27,6 +27,20 @@ const gameBoard = (() => {
         ["-", "-", "-"] 
     ];
 
+    const isFull = () =>{
+        let arrayIsFull = true;
+        //convert our 2d game board into a string seperated by commas
+        const boardArrayString = boardArray.toString();
+        //convert the string seperated by commas into a 1d array for looping  
+        //and assigning to value to box position on the display
+        const stringArray = boardArrayString.split(',');
+        for (let i = 0; i < stringArray.length; i++){
+            if (stringArray[i] === "-"){
+                arrayIsFull = false;
+            }  
+        }
+        return arrayIsFull;     
+    };
     const getBoardArray = () => boardArray;
     const markBox = (row, col, marker) => boardArray[row][col] = marker;
     const displayOnScreen = () => {
@@ -39,16 +53,16 @@ const gameBoard = (() => {
         for (let i = 0; i < stringArray.length; i++){
             boxList[i].textContent = stringArray[i];
         }      
-    }
+    };
     const resetArray = () => {
         boardArray = [
             ["-", "-", "-"],
             ["-", "-", "-"],
             ["-", "-", "-"]
         ];
-    }
+    };
 
-    return { markBox, displayOnScreen, getBoardArray, resetArray };
+    return { markBox, displayOnScreen, getBoardArray, resetArray, isFull};
 })();
 
 //game controller to handle flow of game using module pattern
@@ -87,6 +101,7 @@ const gameController = (() => {
     displayBlocks.forEach(block => {
         block.addEventListener('click', () => {
             //cannot select a spot on the board that has already been marked
+            
             if (block.textContent !== "X" && block.textContent !== "O"){
                 //do logic here;
                 let rowClass = block.classList[1];
@@ -119,14 +134,23 @@ const gameController = (() => {
                 }
                 
                 playTurn(row, col, block);
+                
                 gameBoard.displayOnScreen();
+                //check for a tie
+                if(gameBoard.isFull()){
+                    document.querySelector(".victory-pop-up h1").textContent = "IT'S A TIE";
+                    showVictoryPopUp();
+                }
+                //check for a winner
                 let winningPlayer = checkForWinner(block, row, col);
                 //winner found
                 if (winningPlayer !== undefined){
-                    console.log(winningPlayer.getName());
                     document.querySelector(".victory-pop-up h1").textContent = `${winningPlayer.getName()} WINS!!!!`;
                     showVictoryPopUp();
                 }
+                
+                
+                
             }
             else{
                 alert("Spot is already selected. Please choose a different spot");
@@ -179,7 +203,7 @@ const gameController = (() => {
     };
 
     const checkForWinner = (block, row, col) => {
-        
+
         const blockVal = block.textContent;
         const boardArrayCopy = gameBoard.getBoardArray();
 
